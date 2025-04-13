@@ -4,6 +4,8 @@ METADATA = {
     "version": "1.0.0",
     "author": "开发者",
     "description": "arithmetic operations",
+    "category": "math",
+    "require_auth": False,
     "tools": [
         {
             "name": "add",

@@ -4,6 +4,8 @@ METADATA = {
     "version": "1.0.0",
     "author": "UNIkeEN, Teruteru",
     "description": "获取交大新闻网的新闻",
+    "category": "info_portal",
+    "require_auth": False,
     "tools": [
         {
             "name": "sjtu_news",

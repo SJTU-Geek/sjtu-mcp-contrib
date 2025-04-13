@@ -4,6 +4,8 @@ METADATA = {
     "version": "1.0.0",
     "author": "UNIkeEN, Teruteru",
     "description": "获取交大“第二课堂”的最新活动",
+    "category": "activity",
+    "require_auth": True,
     "tools": [
         {
             "name": "sjtu_activity",

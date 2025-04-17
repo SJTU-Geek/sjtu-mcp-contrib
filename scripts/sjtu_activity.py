@@ -16,7 +16,36 @@ METADATA = {
                 "description": "Get the latest activities of SJTU's \"Second Classroom\".",
                 "type": "object",
                 "properties": {
-                }
+                    "page": {
+                        "description": "Activitiy list page index (default is 1)",
+                        "type": "integer"
+                    },
+                },
+                "required": [
+                ]
+            }
+	    },
+        {
+            "name": "sjtu_activity_signup",
+            "description": "Sign up for an activity of SJTU's \"Second Classroom\".",
+            "entryPoint": "tool_sjtu_activity_signup",
+            "schema": {
+                "title": "sjtu_activity_signup",
+                "description": "Sign up for an activity of SJTU's \"Second Classroom\".",
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "description": "Activity id",
+                        "type": "integer"
+                    },
+                    "additional_info": {
+                        "description": "When the initial signing-up fails, additional information may be required from the user, in JSON dictionary format. Please use property name given by previous message (Most likely a Chinese name).",
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "id",
+                ]
             }
 	    }
     ]
@@ -26,7 +55,7 @@ import requests
 from typing import List, Dict, Any, Optional
 from urllib import parse
 import base64
-from scripts.base.mcp_context import get_http_session
+from scripts.base.mcp_context import get_http_session, NETWORK_DEBUG
 
 HEADERS = {
     'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7',
@@ -44,42 +73,40 @@ HEADERS = {
     'sec-ch-ua-platform': '"Windows"',
 }
 
-def getJaccountOIDCToken(sess: requests.Session)->Dict[str, str]:
+def getJaccountOIDCToken(sess: requests.Session) -> str:
     req1 = sess.get('https://jaccount.sjtu.edu.cn/oauth2/authorize', params={
                             'client_id': "NMCTdJI6Tluw2SSTe6tW",
                             'redirect_uri': 'https://activity.sjtu.edu.cn/auth',
                             'response_type': 'code',
                             'scope': 'profile',
-                        }, headers=HEADERS, verify=False)
+                        }, headers=HEADERS, verify=not NETWORK_DEBUG)
     code = parse.parse_qs(parse.urlparse(req1.url).query)['code'][0]
-    req2 = sess.get('https://activity.sjtu.edu.cn/api/v1/login/token', params={'code':code}, headers=HEADERS, verify=False)
+    req2 = sess.get('https://activity.sjtu.edu.cn/api/v1/login/token', params={'code':code}, headers=HEADERS, verify=not NETWORK_DEBUG)
     token = req2.json()['data']
-    return {'Authorization': 'Bearer '+token}
+    return token
 
-def getActivityTypes(sess: requests.Session)->Optional[Dict[str, Any]]:
-    headers = getJaccountOIDCToken(sess)
-    return sess.get(
+def getActivityTypes(token: str)->Optional[Dict[str, Any]]:
+    return requests.get(
         url='https://activity.sjtu.edu.cn/api/v1/system/activity_type',
         params={'isAll': 'true'}, 
-        headers=headers
+        headers={'Authorization': 'Bearer ' + token},
+        verify=not NETWORK_DEBUG
     ).json()["data"]
     
-def getHotActivities(sess: requests.Session, type_id: int = 1)->Optional[Dict[str, Any]]:
-    headers = getJaccountOIDCToken(sess)
-    return sess.get(
+def getHotActivities(token: str, type_id: int = 1)->Optional[Dict[str, Any]]:
+    return requests.get(
         url='https://activity.sjtu.edu.cn/api/v1/hot/list', 
         params={
             'activity_type_id': type_id,
             'fill': '1',
         }, 
-        headers=headers, 
-        verify=False
+        headers={'Authorization': 'Bearer ' + token}, 
+        verify=not NETWORK_DEBUG
     ).json()["data"]
     
-def getAllActivities(sess: requests.Session, 
+def getAllActivities(token: str, 
                      type_id: int = 1, page: int = 1, page_size: int = 9)->Optional[Dict[str, Any]]:
-    headers = getJaccountOIDCToken(sess)
-    resp = sess.get(
+    resp = requests.get(
         url='https://activity.sjtu.edu.cn/api/v1/activity/list/home', 
         params={
             'page': page, ## 可翻页
@@ -88,19 +115,36 @@ def getAllActivities(sess: requests.Session,
             'time_sort': 'desc',
             # 'can_apply': 'true',
         }, 
-        headers=headers, 
-        verify=False
+        headers={'Authorization': 'Bearer ' + token}, 
+        verify=not NETWORK_DEBUG
     )
     return sorted(resp.json()["data"], key=lambda x: x['activity_time'][0], reverse=True)
 
-def getSingleActivity(sess: requests.Session, id: int):
-    headers = getJaccountOIDCToken(sess)
-    resp = sess.get(
+def getSingleActivity(token: str, id: int):
+    resp = requests.get(
         url=f'https://activity.sjtu.edu.cn/api/v1/activity/{id}', 
-        headers=headers, 
-        verify=False
+        headers={'Authorization': 'Bearer ' + token}, 
+        verify=not NETWORK_DEBUG
     )
     return resp.json()["data"]
+
+def getProfile(token: str):
+    resp = requests.get(
+        url=f'https://activity.sjtu.edu.cn/api/v1/profile', 
+        headers={'Authorization': 'Bearer ' + token}, 
+        verify=not NETWORK_DEBUG
+    )
+    return resp.json()["data"]
+
+def doSignUp(token, form_submit):
+    resp = requests.post(
+        url=f'https://activity.sjtu.edu.cn/api/v1/signUp',
+        json=form_submit,
+        headers={'Authorization': 'Bearer ' + token}, 
+        verify=not NETWORK_DEBUG
+    )
+    resp.raise_for_status()
+    return resp.json()
 
 def actIdToUrlParam(activityId:int) -> str:
     idStr = str(activityId)
@@ -137,13 +181,77 @@ def get_activity_info_nl(activity: dict[str, Any]):
     f"  活动时间：{activity['activity_time'][0]} ~ {activity['activity_time'][1]}"
     return res
 
-def tool_sjtu_activity():
+def render_undetermined_form(form: dict[str, any]):
+    if (form['tag'] == 'ElInput'):
+        return f"- {form['label']}（类型：短文本）"
+    elif (form['tag'] == 'textarea'):
+        return f"- {form['label']}（类型：长文本）"
+    elif (form['tag'] == 'Selector'):
+        options = ','.join([("\"" + item['name'] + "\"") for item in form['dict']])
+        return f"- {form['label']}（类型：单选；可选项：{options}）"
+    elif (form['tag'] == 'RadioGroup'):
+        options = ','.join([("\"" + item['name'] + "\"") for item in form['dict']])
+        return f"- {form['label']}（类型：单选；可选项：{options}）"
+    elif (form['tag'] == 'CheckboxGroup'):
+        options = ','.join([("\"" + item['name'] + "\"") for item in form['dict']])
+        return f"- {form['label']}（类型：多选；可选项：{options}）"
+    elif (form['tag'] == 'file'):
+        return f"- {form['label']}（类型：附件；助手无法处理，请用户手动报名）"
+    elif (form['tag'] == 'img'):
+        return f"- {form['label']}（类型：图片；助手无法处理，请用户手动报名）"
+    
+def tool_sjtu_activity(page: int = 1):
     sess = get_http_session()
-    result = getAllActivities(sess, 2, 1, 15)
+    token = getJaccountOIDCToken(sess)
+    result = getAllActivities(token, 2, page, 10)
     return '\n\n'.join(
         [get_activity_info_nl(item) for item in result]
     )
 
-def tool_sjtu_activity_singup(id: int):
+def tool_sjtu_activity_signup(id: int, additional_info: str = "{}"):
     sess = get_http_session()
-    result = getSingleActivity(id)
+    token = getJaccountOIDCToken(sess)
+    profile = getProfile(token)
+    if (not profile):
+        return False, "授权失败"
+    activity = getSingleActivity(token, id)
+    if (activity == False):
+        return False, "找不到活动"
+    if (activity['in_signed_up'] == True):
+        return True, "已经报名，无需重复报名"
+    form_infos = activity['sign_up_info']['form_design']
+    form_submit = {"id":id,"college":profile['topOrganizeId'],"form_value":{}}
+    if (form_infos):
+        from scripts.account_info import get_account_info
+        from types_linq import Enumerable
+        import json
+        account_info = get_account_info()
+        identity = Enumerable(account_info.entities[0].identities) \
+            .first(lambda x: x.is_default)
+        additional_forminfos = json.loads(additional_info)
+        undetermined_forms = []
+        for form_info in form_infos:
+            if ("手机" in str(form_info['label'])):
+                form_submit['form_value'][form_info['id']] = account_info.entities[0].mobile
+            elif ("邮箱" in str(form_info['label'])):
+                form_submit['form_value'][form_info['id']] = account_info.entities[0].email
+            elif ("身份证" in str(form_info['label'])):
+                form_submit['form_value'][form_info['id']] = account_info.entities[0].card_no
+            elif ("学院" in str(form_info['label'])):
+                form_submit['form_value'][form_info['id']] = identity.organize.name
+            elif ("专业" in str(form_info['label'])):
+                form_submit['form_value'][form_info['id']] = identity.major.name
+            elif (str(form_info['label']) in additional_forminfos):
+                form_submit['form_value'][form_info['id']] = additional_forminfos[str(form_info['label'])]
+            else:
+                undetermined_forms.append(form_info)
+        if (len(undetermined_forms) > 0):
+            forms_rendered = '\n'.join(
+                [render_undetermined_form(form) for form in undetermined_forms]
+            )
+            return False, f"报名未完成，还需要补充以下信息：\n{forms_rendered}"
+    submit_res = doSignUp(token, form_submit)
+    if (submit_res['code'] == 200):
+        return True, (submit_res['message'] if submit_res['message'] else "报名成功")
+    else:
+        return False, (submit_res['message'] if submit_res['message'] else "报名失败")

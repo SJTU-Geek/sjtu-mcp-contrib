@@ -25,7 +25,7 @@ METADATA = {
 from dataclasses import dataclass
 from typing import Any, List, Optional, Dict
 from scripts.base.data_utils import from_str, from_none, from_bool, from_dict, from_int, from_list, from_union, to_class
-from scripts.base.mcp_context import get_http_session
+from scripts.base.mcp_context import get_http_session, NETWORK_DEBUG
 
 @dataclass
 class Birthday:
@@ -386,7 +386,7 @@ HEADERS = {
 
 def get_account_info() -> AccountInfo:
     sess = get_http_session()
-    resp = sess.get("https://my.sjtu.edu.cn/api/account", headers=HEADERS)
+    resp = sess.get("https://my.sjtu.edu.cn/api/account", headers=HEADERS, verify=not NETWORK_DEBUG)
     if (not resp.url.startswith("https://my.sjtu.edu.cn/")):
         raise Exception("认证失败")
     result = AccountInfo.from_dict(resp.json())

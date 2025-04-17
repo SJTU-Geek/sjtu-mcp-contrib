@@ -26,11 +26,12 @@ from typing import Any, Dict, List, Tuple
 from urllib.parse import urljoin
 import requests
 from bs4 import BeautifulSoup
+from scripts.base.mcp_context import NETWORK_DEBUG
 
 def getSjtuNews() -> Tuple[bool, List[Dict[str, Any]]]:
     """交大新闻网"""
     pageUrl = 'https://news.sjtu.edu.cn/jdyw/index.html'
-    req = requests.get(pageUrl)
+    req = requests.get(pageUrl, verify=not NETWORK_DEBUG)
     if req.status_code != requests.codes.ok:
         return False, "获取信息失败，请检查网络连接"
     html = req.text

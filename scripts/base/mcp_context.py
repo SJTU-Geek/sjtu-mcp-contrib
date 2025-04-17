@@ -30,6 +30,7 @@ class MockContext:
         return MockMemoryCache()
 
 CONTEXT = MockContext()
+NETWORK_DEBUG = True
 
 def get_context():
     return CONTEXT

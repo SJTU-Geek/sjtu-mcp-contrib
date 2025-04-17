@@ -1,3 +1,3 @@
-import scripts.sjtu_activity
+import scripts.account_info
 
-print(scripts.sjtu_activity.tool_sjtu_activity())
+print(scripts.account_info.tool_account_info())

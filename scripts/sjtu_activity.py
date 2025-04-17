@@ -90,8 +90,17 @@ def getAllActivities(sess: requests.Session,
         }, 
         headers=headers, 
         verify=False
-    ).json()["data"]
-    return sorted(resp, key=lambda x: x['activity_time'][0], reverse=True)
+    )
+    return sorted(resp.json()["data"], key=lambda x: x['activity_time'][0], reverse=True)
+
+def getSingleActivity(sess: requests.Session, id: int):
+    headers = getJaccountOIDCToken(sess)
+    resp = sess.get(
+        url=f'https://activity.sjtu.edu.cn/api/v1/activity/{id}', 
+        headers=headers, 
+        verify=False
+    )
+    return resp.json()["data"]
 
 def actIdToUrlParam(activityId:int) -> str:
     idStr = str(activityId)
@@ -119,6 +128,7 @@ def get_activity_info_nl(activity: dict[str, Any]):
     res = \
     f"- [{activity['name']}]({'https://activity.sjtu.edu.cn/activity/detail/' + actIdToUrlParam(activity['id'])})" + "\n" + \
     f"  ![]({'https://activity.sjtu.edu.cn' + activity['img']})" + "\n" + \
+    f"  id:{activity['id']}" + "\n" + \
     f"  主办方：{activity['sponsor']}" + "\n" + \
     (f"  报名人数：{activity['signed_up_num']} / {activity['person_num']}\n" if activity['person_num'] else "") + \
     f"  报名方式：{getSignUpMethodDesc(activity['method'])}" + "\n" + \
@@ -129,10 +139,11 @@ def get_activity_info_nl(activity: dict[str, Any]):
 
 def tool_sjtu_activity():
     sess = get_http_session()
-    result = getAllActivities(sess, 2, 1, 15);
+    result = getAllActivities(sess, 2, 1, 15)
     return '\n\n'.join(
         [get_activity_info_nl(item) for item in result]
     )
 
-if __name__ == "__main__":
-    print(tool_sjtu_activity())
+def tool_sjtu_activity_singup(id: int):
+    sess = get_http_session()
+    result = getSingleActivity(id)

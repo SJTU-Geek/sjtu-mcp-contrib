@@ -10,7 +10,7 @@ METADATA = {
         {
             "name": "sjtu_news",
             "description": "Fetch news from the SJTU's news portal.",
-            "entryPoint": "tool_sjtu_news",
+            "entrypoint": "tool_sjtu_news",
             "schema": {
                 "title": "sjtu_news",
                 "description": "Fetch news from the SJTU's news portal.",

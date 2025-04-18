@@ -10,7 +10,7 @@ METADATA = {
         {
             "name": "sjtu_activity",
             "description": "Get the latest activities of SJTU's \"Second Classroom\".",
-            "entryPoint": "tool_sjtu_activity",
+            "entrypoint": "tool_sjtu_activity",
             "schema": {
                 "title": "sjtu_activity",
                 "description": "Get the latest activities of SJTU's \"Second Classroom\".",
@@ -28,7 +28,7 @@ METADATA = {
         {
             "name": "sjtu_activity_signup",
             "description": "Sign up for an activity of SJTU's \"Second Classroom\".",
-            "entryPoint": "tool_sjtu_activity_signup",
+            "entrypoint": "tool_sjtu_activity_signup",
             "schema": {
                 "title": "sjtu_activity_signup",
                 "description": "Sign up for an activity of SJTU's \"Second Classroom\".",

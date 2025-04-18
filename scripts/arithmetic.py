@@ -10,7 +10,7 @@ METADATA = {
         {
             "name": "add",
             "description": "Add two numbers",
-            "entryPoint": "add",
+            "entrypoint": "add",
             "schema": {
                 "title": "add",
                 "description": "add two numbers.",
@@ -32,7 +32,7 @@ METADATA = {
         {
             "name": "subtract",
             "description": "subtract two numbers.",
-            "entryPoint": "subtract",
+            "entrypoint": "subtract",
             "schema": {
                 "title": "subtract",
                 "description": "subtract two numbers.",
@@ -56,7 +56,7 @@ METADATA = {
         {
             "name": "multiply",
             "description": "multiply two numbers.",
-            "entryPoint": "multiply",
+            "entrypoint": "multiply",
             "schema": {
                 "title": "multiply",
                 "description": "multiply two numbers.",
@@ -78,7 +78,7 @@ METADATA = {
         {
             "name": "divide",
             "description": "divide two numbers",
-            "entryPoint": "divide",
+            "entrypoint": "divide",
             "schema": {
                 "title": "divide",
                 "description": "divide two numbers.",

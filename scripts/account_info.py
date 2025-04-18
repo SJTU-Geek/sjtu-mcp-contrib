@@ -10,7 +10,7 @@ METADATA = {
         {
             "name": "account_info",
             "description": "Obtain the current user's personal information.",
-            "entryPoint": "tool_account_info",
+            "entrypoint": "tool_account_info",
             "schema": {
                 "title": "account_info",
                 "description": "Obtain the current user's personal information.",

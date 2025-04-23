@@ -52,7 +52,7 @@ import re
 from scripts.base.mcp_context import get_http_session, NETWORK_DEBUG
 from scripts.base.data_utils import from_str, from_none, from_bool, from_dict, from_int, from_list, from_union, to_class
 from dataclasses import dataclass
-from typing import List, Any, Optional, TypeVar, Callable, Type, cast
+from typing import List, Any, Literal, Optional, TypeVar, Callable, Type, cast
 
 @dataclass
 class QueryModel:
@@ -788,6 +788,215 @@ class JwCourseScoreList:
         result["totalResult"] = from_int(self.total_result)
         return result
 
+@dataclass
+class JwGpaStatistic:
+    bj: str
+    bjgmc: str
+    bjgms: str
+    bjgxf: str
+    gpa: str
+    gpapm: str
+    jgmc: str
+    ms: str
+    tgl: str
+    tj_id: str
+    xh: str
+    xh_id: str
+    xjf: str
+    xjfpm: str
+    xm: str
+    year: str
+    zf: str
+    zxf: str
+    date: Optional[str] = None
+    date_digit: Optional[str] = None
+    date_digit_separator: Optional[str] = None
+    day: Optional[str] = None
+    hdxf: Optional[str] = None
+    jgpxzd: Optional[str] = None
+    kcfw: Optional[str] = None
+    listnav: Optional[str] = None
+    locale_key: Optional[str] = None
+    month: Optional[str] = None
+    njmc: Optional[str] = None
+    pageable: Optional[bool] = None
+    page_total: Optional[int] = None
+    pm1: Optional[str] = None
+    pm2: Optional[str] = None
+    query_model: Optional[QueryModel] = None
+    rangeable: Optional[bool] = None
+    row_id: Optional[str] = None
+    total_result: Optional[str] = None
+    user_model: Optional[UserModel] = None
+    zymc: Optional[str] = None
+
+    @staticmethod
+    def from_dict(obj: Any) -> 'JwGpaStatistic':
+        assert isinstance(obj, dict)
+        bj = from_str(obj.get("bj"))
+        bjgmc = from_str(obj.get("bjgmc"))
+        bjgms = from_str(obj.get("bjgms"))
+        bjgxf = from_str(obj.get("bjgxf"))
+        gpa = from_str(obj.get("gpa"))
+        gpapm = from_str(obj.get("gpapm"))
+        jgmc = from_str(obj.get("jgmc"))
+        ms = from_str(obj.get("ms"))
+        tgl = from_str(obj.get("tgl"))
+        tj_id = from_str(obj.get("tj_id"))
+        xh = from_str(obj.get("xh"))
+        xh_id = from_str(obj.get("xh_id"))
+        xjf = from_str(obj.get("xjf"))
+        xjfpm = from_str(obj.get("xjfpm"))
+        xm = from_str(obj.get("xm"))
+        year = from_str(obj.get("year"))
+        zf = from_str(obj.get("zf"))
+        zxf = from_str(obj.get("zxf"))
+        date = from_union([from_str, from_none], obj.get("date"))
+        date_digit = from_union([from_str, from_none], obj.get("dateDigit"))
+        date_digit_separator = from_union([from_str, from_none], obj.get("dateDigitSeparator"))
+        day = from_union([from_str, from_none], obj.get("day"))
+        hdxf = from_union([from_str, from_none], obj.get("hdxf"))
+        jgpxzd = from_union([from_str, from_none], obj.get("jgpxzd"))
+        kcfw = from_union([from_str, from_none], obj.get("kcfw"))
+        listnav = from_union([from_str, from_none], obj.get("listnav"))
+        locale_key = from_union([from_str, from_none], obj.get("localeKey"))
+        month = from_union([from_str, from_none], obj.get("month"))
+        njmc = from_union([from_str, from_none], obj.get("njmc"))
+        pageable = from_union([from_bool, from_none], obj.get("pageable"))
+        page_total = from_union([from_int, from_none], obj.get("pageTotal"))
+        pm1 = from_union([from_str, from_none], obj.get("pm1"))
+        pm2 = from_union([from_str, from_none], obj.get("pm2"))
+        query_model = from_union([QueryModel.from_dict, from_none], obj.get("queryModel"))
+        rangeable = from_union([from_bool, from_none], obj.get("rangeable"))
+        row_id = from_union([from_str, from_none], obj.get("row_id"))
+        total_result = from_union([from_str, from_none], obj.get("totalResult"))
+        user_model = from_union([UserModel.from_dict, from_none], obj.get("userModel"))
+        zymc = from_union([from_str, from_none], obj.get("zymc"))
+        return JwGpaStatistic(bj, bjgmc, bjgms, bjgxf, gpa, gpapm, jgmc, ms, tgl, tj_id, xh, xh_id, xjf, xjfpm, xm, year, zf, zxf, date, date_digit, date_digit_separator, day, hdxf, jgpxzd, kcfw, listnav, locale_key, month, njmc, pageable, page_total, pm1, pm2, query_model, rangeable, row_id, total_result, user_model, zymc)
+
+    def to_dict(self) -> dict:
+        result: dict = {}
+        result["bj"] = from_str(self.bj)
+        result["bjgmc"] = from_str(self.bjgmc)
+        result["bjgms"] = from_str(self.bjgms)
+        result["bjgxf"] = from_str(self.bjgxf)
+        result["gpa"] = from_str(self.gpa)
+        result["gpapm"] = from_str(self.gpapm)
+        result["jgmc"] = from_str(self.jgmc)
+        result["ms"] = from_str(self.ms)
+        result["tgl"] = from_str(self.tgl)
+        result["tj_id"] = from_str(self.tj_id)
+        result["xh"] = from_str(self.xh)
+        result["xh_id"] = from_str(self.xh_id)
+        result["xjf"] = from_str(self.xjf)
+        result["xjfpm"] = from_str(self.xjfpm)
+        result["xm"] = from_str(self.xm)
+        result["year"] = from_str(self.year)
+        result["zf"] = from_str(self.zf)
+        result["zxf"] = from_str(self.zxf)
+        if self.date is not None:
+            result["date"] = from_union([from_str, from_none], self.date)
+        if self.date_digit is not None:
+            result["dateDigit"] = from_union([from_str, from_none], self.date_digit)
+        if self.date_digit_separator is not None:
+            result["dateDigitSeparator"] = from_union([from_str, from_none], self.date_digit_separator)
+        if self.day is not None:
+            result["day"] = from_union([from_str, from_none], self.day)
+        if self.hdxf is not None:
+            result["hdxf"] = from_union([from_str, from_none], self.hdxf)
+        if self.jgpxzd is not None:
+            result["jgpxzd"] = from_union([from_str, from_none], self.jgpxzd)
+        if self.kcfw is not None:
+            result["kcfw"] = from_union([from_str, from_none], self.kcfw)
+        if self.listnav is not None:
+            result["listnav"] = from_union([from_str, from_none], self.listnav)
+        if self.locale_key is not None:
+            result["localeKey"] = from_union([from_str, from_none], self.locale_key)
+        if self.month is not None:
+            result["month"] = from_union([from_str, from_none], self.month)
+        if self.njmc is not None:
+            result["njmc"] = from_union([from_str, from_none], self.njmc)
+        if self.pageable is not None:
+            result["pageable"] = from_union([from_bool, from_none], self.pageable)
+        if self.page_total is not None:
+            result["pageTotal"] = from_union([from_int, from_none], self.page_total)
+        if self.pm1 is not None:
+            result["pm1"] = from_union([from_str, from_none], self.pm1)
+        if self.pm2 is not None:
+            result["pm2"] = from_union([from_str, from_none], self.pm2)
+        if self.query_model is not None:
+            result["queryModel"] = from_union([lambda x: to_class(QueryModel, x), from_none], self.query_model)
+        if self.rangeable is not None:
+            result["rangeable"] = from_union([from_bool, from_none], self.rangeable)
+        if self.row_id is not None:
+            result["row_id"] = from_union([from_str, from_none], self.row_id)
+        if self.total_result is not None:
+            result["totalResult"] = from_union([from_str, from_none], self.total_result)
+        if self.user_model is not None:
+            result["userModel"] = from_union([lambda x: to_class(UserModel, x), from_none], self.user_model)
+        if self.zymc is not None:
+            result["zymc"] = from_union([from_str, from_none], self.zymc)
+        return result
+
+
+@dataclass
+class JwGpaQueryResult:
+    """GPA统计"""
+    current_page: int
+    current_result: int
+    entity_or_field: bool
+    items: List[JwGpaStatistic]
+    limit: int
+    offset: int
+    page_no: int
+    page_size: int
+    show_count: int
+    sort_name: str
+    sort_order: str
+    sorts: List[str]
+    total_count: int
+    total_page: int
+    total_result: int
+
+    @staticmethod
+    def from_dict(obj: Any) -> 'JwGpaQueryResult':
+        assert isinstance(obj, dict)
+        current_page = from_int(obj.get("currentPage"))
+        current_result = from_int(obj.get("currentResult"))
+        entity_or_field = from_bool(obj.get("entityOrField"))
+        items = from_list(JwGpaStatistic.from_dict, obj.get("items"))
+        limit = from_int(obj.get("limit"))
+        offset = from_int(obj.get("offset"))
+        page_no = from_int(obj.get("pageNo"))
+        page_size = from_int(obj.get("pageSize"))
+        show_count = from_int(obj.get("showCount"))
+        sort_name = from_str(obj.get("sortName"))
+        sort_order = from_str(obj.get("sortOrder"))
+        sorts = from_list(from_str, obj.get("sorts"))
+        total_count = from_int(obj.get("totalCount"))
+        total_page = from_int(obj.get("totalPage"))
+        total_result = from_int(obj.get("totalResult"))
+        return JwGpaQueryResult(current_page, current_result, entity_or_field, items, limit, offset, page_no, page_size, show_count, sort_name, sort_order, sorts, total_count, total_page, total_result)
+
+    def to_dict(self) -> dict:
+        result: dict = {}
+        result["currentPage"] = from_int(self.current_page)
+        result["currentResult"] = from_int(self.current_result)
+        result["entityOrField"] = from_bool(self.entity_or_field)
+        result["items"] = from_list(lambda x: to_class(JwGpaStatistic, x), self.items)
+        result["limit"] = from_int(self.limit)
+        result["offset"] = from_int(self.offset)
+        result["pageNo"] = from_int(self.page_no)
+        result["pageSize"] = from_int(self.page_size)
+        result["showCount"] = from_int(self.show_count)
+        result["sortName"] = from_str(self.sort_name)
+        result["sortOrder"] = from_str(self.sort_order)
+        result["sorts"] = from_list(from_str, self.sorts)
+        result["totalCount"] = from_int(self.total_count)
+        result["totalPage"] = from_int(self.total_page)
+        result["totalResult"] = from_int(self.total_result)
+        return result
+
 def getCurrentXnXq():
     now = datetime.datetime.now()
     mm = now.month
@@ -885,6 +1094,53 @@ def getCourseScoreList(sess: requests.Session, semester: str = None):
     )
     return JwCourseScoreList.from_dict(resp.json())
 
+def requestGpaTj(sess: requests.Session, start_semester: str = None, end_semester: str = None, type: Literal["all", "core"] = "core"):
+    if (start_semester):
+        xnxq1 = parseXnXq(start_semester)
+    else:
+        xnxq1 = getCurrentXnXq()
+    if (end_semester):
+        xnxq2 = parseXnXq(end_semester)
+    else:
+        xnxq2 = getCurrentXnXq()
+    resp = sess.post(
+        "https://i.sjtu.edu.cn/cjpmtj/gpapmtj_tjGpapmtj.html?gnmkdm=N309131",
+        data={
+            "qsXnxq": f"{xnxq1[0]}{xnxq1[1]}",
+            "zzXnxq": f"{xnxq2[0]}{xnxq2[1]}",
+            "tjgx": "0",
+            "alsfj": "",
+            "sspjfblws": "9",
+            "pjjdblws": "9",
+            "bjpjf": "缓考,缓考(重考),尚未修读,暂不记录,中期退课,重考报名",
+            "bjjd": "缓考,缓考(重考),尚未修读,暂不记录,中期退课,重考报名",
+            "kch_ids": "MARX1205,TH009,TH020,FCE62B4E084826EBE055F8163EE1DCCC",
+            "bcjkc_id": "",
+            "bcjkz_id": "",
+            "cjkz_id": "",
+            "cjxzm": "zhyccj",
+            "kcfw": "hxkc" if (type == 'core') else 'qbkc',
+            "tjfw": "njzy",
+            "xjzt": "1",
+        },
+        verify=not NETWORK_DEBUG
+    )
+    return resp.text.strip("\"")
+
+def getGpaTjResult(sess: requests.Session):
+    resp = sess.post(
+        "https://i.sjtu.edu.cn/cjpmtj/gpapmtj_cxGpaxjfcxIndex.html?doType=query&gnmkdm=N309131",
+        data={
+            "tjfw": "njzy",
+            "queryModel.showCount": "200",
+            "queryModel.currentPage": "1",
+            "queryModel.sortName": "",
+            "queryModel.sortOrder": "asc",
+        },
+        verify=not NETWORK_DEBUG
+    )
+    return JwGpaQueryResult.from_dict(resp.json())
+
 def renderPersonalCourse(c: KBList):
     res = \
     f"- {c.kcmc}（{c.kch}）" + "\n" + \
@@ -917,6 +1173,23 @@ def renderCourseScoreList(list: JwCourseScoreList):
     groups = Enumerable(list.items).group_by(lambda x: x.kch, lambda y: y)
     return '\n'.join(groups.select(lambda c: renderSingleCourseScore(c.to_list())))
 
+def renderGrades(stat: JwGpaStatistic):
+    res = \
+    f"总分：{stat.zf}" + "\n" + \
+    f"门数：{stat.ms}" + "\n" + \
+    f"不及格门数：{stat.bjgms}" + "\n" + \
+    f"总学分：{stat.zxf}" + "\n" + \
+    f"获得学分：{stat.hdxf}" + "\n" + \
+    f"不及格学分：{stat.bjgxf}" + "\n" + \
+    f"通过率：{stat.tgl}" + "\n" + \
+    f"学积分：{stat.xjf}" + "\n" + \
+    f"学积分排名：{stat.xjfpm}" + "\n" + \
+    f"绩点(gpa)：{stat.gpa}" + "\n" + \
+    f"绩点排名：{stat.gpapm}" + "\n" + \
+    f"全部课程不及格门次：{stat.bjgmc}" + "\n" + \
+    ""
+    return res
+
 def tool_personal_course_table(semester: str = None):
     sess = get_http_session()
     login(sess)
@@ -933,4 +1206,16 @@ def tool_course_score_list(semester: str = None):
     if (scores.total_count == 0):
         return True, "找不到数据，可能是成绩还没有出哦~"
     res = renderCourseScoreList(scores)
+    return res
+
+def tool_gpa_and_ranking(start_semester: str = None, end_semester: str = None):
+    sess = get_http_session()
+    login(sess)
+    res = requestGpaTj(sess, start_semester, end_semester)
+    if (not res.startswith("统计成功")):
+        return False, "统计失败！"
+    stat = getGpaTjResult(sess)
+    if (stat.total_count == 0):
+        return True, "找不到数据，可能是统计范围搞错了哦~"
+    res = renderGrades(stat.items[0])
     return res

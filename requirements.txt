@@ -1,0 +1,3 @@
+types_linq
+requests
+beautifulsoup4

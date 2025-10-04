@@ -193,7 +193,7 @@ class Identity:
         assert isinstance(obj, dict)
         create_date = from_int(obj.get("createDate"))
         default_optional = from_bool(obj.get("defaultOptional"))
-        expire_date = from_str(obj.get("expireDate"))
+        expire_date = from_union([from_str, from_none], obj.get("expireDate"))
         is_default = from_bool(obj.get("isDefault"))
         kind = from_str(obj.get("kind"))
         status = from_str(obj.get("status"))
@@ -219,7 +219,7 @@ class Identity:
         result: dict = {}
         result["createDate"] = from_int(self.create_date)
         result["defaultOptional"] = from_bool(self.default_optional)
-        result["expireDate"] = from_str(self.expire_date)
+        result["expireDate"] = from_union([from_str, from_none], self.expire_date)
         result["isDefault"] = from_bool(self.is_default)
         result["kind"] = from_str(self.kind)
         result["status"] = from_str(self.status)
@@ -386,6 +386,7 @@ HEADERS = {
 
 def get_account_info() -> AccountInfo:
     sess = get_http_session()
+    resp = sess.get("https://my.sjtu.edu.cn/", headers=HEADERS, allow_redirects=10, verify=not NETWORK_DEBUG)
     resp = sess.get("https://my.sjtu.edu.cn/api/account", headers=HEADERS, verify=not NETWORK_DEBUG)
     if (not resp.url.startswith("https://my.sjtu.edu.cn/")):
         raise Exception("认证失败")
